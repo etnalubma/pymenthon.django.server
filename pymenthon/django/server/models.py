@@ -8,23 +8,23 @@ class AbstractBase(models.Model):
         abstract = True
 
     @classmethod
-    def add(klass, kw):
+    def add(klass, **kw):
         c = klass(**kw)
         c.save()
         return "instance saved."
 
     @classmethod
-    def remove(klass, ide):
-        c = klass.objects.get(pk=ide)
+    def remove(klass, **kw):
+        c = klass.objects.get(pk=kw['ide'])
         c.delete()
-        return c.name + " deleted."
+        return "instance deleted."
 
     @classmethod
     def getAll(klass):
         objects = klass.objects.all()
         cs = []
         for c in objects:
-            cs.append({'id' : c.id})
+            cs.append({'id': c.id})
 
         return cs        
        
@@ -48,6 +48,10 @@ class IClientAPI(interface.Interface):
         Return all the clients instances
         """
         pass
+    def getById(ide):
+        """
+        Return a client by id
+        """
        
  
 class ISellerAPI(interface.Interface):
@@ -72,8 +76,13 @@ class ISellerAPI(interface.Interface):
         Return all the sellers instances
         """
         pass
-        
-       
+    
+    def getById(ide):
+        """
+        Return a seller by id
+        """
+        pass
+               
 class Seller(AbstractBase):
     interface.implements(ISellerAPI)
     
@@ -86,6 +95,7 @@ class Seller(AbstractBase):
     
 class Client(AbstractBase):
     interface.implements(IClientAPI)
+    
     name = models.CharField(max_length=35)
     
         
